@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Protegido por QR Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #8B4513; /* Marrom */
+            color: #FFFFFF; /* Texto branco para contraste */
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #FFFFFF;
+        }
+        .tabs {
+            display: flex;
+            cursor: pointer;
+            margin-bottom: 20px;
+            background-color: #A0522D; /* Marrom mais claro para abas */
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .tab {
+            flex: 1;
+            padding: 15px 0;
+            text-align: center;
+            border-right: 1px solid #8B4513;
+            background-color: #A0522D; /* Marrom mais claro */
+            transition: background-color 0.3s;
+        }
+        .tab:last-child {
+            border-right: none;
+        }
+        .tab.active {
+            background-color: #228B22; /* Verde */
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+        .content {
+            background-color: #D2B48C; /* Tom de marrom claro para o conteúdo */
+            border-radius: 5px;
+            padding: 20px;
+        }
+        .tab-content.hidden {
+            display: none;
+        }
+        a {
+            color: #228B22; /* Verde para links */
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        /* QR Code Section Styling */
+        .qr-section {
+            margin-top: 30px;
+        }
+        .qr-section div {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Bem-vindo ao Site Protegido</h1>
+
+        <div class="tabs">
+            <div class="tab" data-tab="1">Cavalo</div>
+            <div class="tab" data-tab="2">Livros</div>
+            <div class="tab" data-tab="3">As Telas</div>
+        </div>
+
+        <div class="content">
+            <div class="tab-content" id="tab-1">
+                <h2>Cavalo</h2>
+                <p>Como se desenha um cavalo?<br>
+                Com carvão ou tinta,<br>
+                como colocar em traços<br>
+                A sua ânsia de liberdade,<br>
+                a sua forma de espaço?</p>
+            </div>
+            <div class="tab-content hidden" id="tab-2">
+                <h2>Livros</h2>
+                <p>A primeira poeta do mundo, numa tabuleta de argila, na antiquíssima Mesopotâmia, se chamava Enheduana.<br>
+                É um milagre que os livros sejam também uma caixa mágica de tempo e a chave já vem dentro.<br>
+                Também podemos ir até a Grécia Antiga e ouvir a poeta Safo,<br>
+                que antes de dormir escreveu, certamente numa noite muito escura:<br>
+                "meia-noite<br>
+                a lua já se pôs,<br>
+                as Plêiades também,<br>
+                Passa o tempo<br>
+                e estou tão sozinha".<br>
+                Milhares de anos depois ela nos oferta a sua solidão.</p>
+            </div>
+            <div class="tab-content hidden" id="tab-3">
+                <h2>As Telas</h2>
+                <p>As telas pedem pose, e sorriso, a um clique mora a felicidade, a alegria, as festas, milhões de amigos.<br>
+                Isso na vida irreal que também é real, às vezes é tão tênue a sua linha, e perigosa a fronteira,<br>
+                Sem guardas, passaportes, vigias.<br>
+                A tela tem túneis, subterrâneos, suicídios, anorexia.<br>
+                A tela se acende e se apaga, nas ruas, pontos de ônibus, navios, aeroportos, hospitais...<br>
+                A tela se carrega com luz e com nossa ansiedade.<br>
+                Outro tipo de luz é abraçar os amigos, sentir seu calor, seu perfume.</p>
+            </div>
+        </div>
+
+        <div class="qr-section">
+            <h2>Links e QR Codes</h2>
+            <div>
+                <h3>Texto 1: Cavalo</h3>
+                <a href="?tab=1">Acessar Cavalo</a>
+                <div id="qrcode1"></div>
+            </div>
+            <div>
+                <h3>Texto 2: Livros</h3>
+                <a href="?tab=2">Acessar Livros</a>
+                <div id="qrcode2"></div>
+            </div>
+            <div>
+                <h3>Texto 3: As Telas</h3>
+                <a href="?tab=3">Acessar As Telas</a>
+                <div id="qrcode3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Adicione a biblioteca QRCode.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+
+            function activateTab(tabNumber) {
+                tabs.forEach(tab => {
+                    if (tab.dataset.tab === tabNumber) {
+                        tab.classList.add('active');
+                    } else {
+                        tab.classList.remove('active');
+                    }
+                });
+
+                contents.forEach(content => {
+                    if (content.id === 'tab-' + tabNumber) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabNumber = tab.dataset.tab;
+                    activateTab(tabNumber);
+                    window.history.replaceState(null, null, `?tab=${tabNumber}`);
+                });
+            });
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const tabParam = urlParams.get('tab');
+
+            if (tabParam && ['1', '2', '3'].includes(tabParam)) {
+                activateTab(tabParam);
+            } else {
+                activateTab('1');
+            }
+
+            // Gera os QR codes
+            const baseUrl = window.location.origin + window.location.pathname;
+            new QRCode(document.getElementById("qrcode1"), {
+                text: `${baseUrl}?tab=1`,
+                width: 128,
+                height: 128,
+                colorDark: "#228B22",
+                colorLight: "#FFFFFF",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            new QRCode(document.getElementById("qrcode2"), {
+                text: `${baseUrl}?tab=2`,
+                width: 128,
+                height: 128,
+                colorDark: "#228B22",
+                colorLight: "#FFFFFF",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            new QRCode(document.getElementById("qrcode3"), {
+                text: `${baseUrl}?tab=3`,
+                width: 128,
+                height: 128,
+                colorDark: "#228B22",
+                colorLight: "#FFFFFF",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        });
+    </script>
+
+</body>
+</html>
